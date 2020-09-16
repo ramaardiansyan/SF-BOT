@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <style>
+        .toprow {
+            height: 500px;
+        }
+
+        #canvas {
+            border: solid 1px blue;
+            width: 100%;
+            margin: 0;
+        }
+
+        .farmarea {
+            text-align: center;
+        }
+
+        .submitbottom {
+            text-align: center;
+        }
+
+        .scrop {
+            align-content: left;
+        }
+    </style>
+    <script>
+
+        function draw() {
+
+            var canvas = document.getElementById('canvas');
+
+            if (canvas.getContext) {
+                var context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                for (var x = 0.5; x < canvas.width; x += 20) {
+                    context.moveTo(x, 0);
+                    context.lineTo(x, canvas.width);
+                }
+
+                for (var y = 0.5; y < canvas.height; y += 20) {
+                    context.moveTo(0, y);
+                    context.lineTo(canvas.width, y);
+
+                }
+
+                context.strokeStyle = 'grey';
+                context.stroke();
+
+            }
+        }
+
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect(), // abs. size of element
+                scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for X
+                scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
+
+            return {
+                x: (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
+                y: (evt.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+            }
+        }
+        function showCoords(event) {
+            draw();
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+            var pos = getMousePos(canvas, event);
+            var x = pos.x;//event.clientX - 10;
+            var y = pos.y;// event.clientY - 80;
+            var coords = "X coordinates: " + x + ", Y coordinates: " + y;
+            document.getElementById("showXCoords").value = x;
+            document.getElementById("showYCoords").value = y;
+            var c = document.getElementById("canvas");
+            var ctx = c.getContext("2d");
+            ctx.beginPath();
+            ctx.arc(x, y, 30, 0, 2 * Math.PI);
+            ctx.fillStyle = "red";
+            ctx.fill();
+
+        }
+
+    </script>
+
+</head>
+
+<body onload="draw()">
+
+    <div class="jumbotron text-center">
+        <h1>Farmbot Controls</h1>
+    </div>
+
+    <div class="container">
+        <div class="container row toprow">
+            <div class="col-sm-12 farmarea">
+                <h3>Farm Area</h3>
+                <div>
+                    <canvas id="canvas" width='600' height='300' onclick="showCoords(event)"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="container row scrop">
+            <form id="myform" action="/result" align='right' method="POST">
+                <div class="col-sm-6 ">
+                    <h3 style="background:cadetblue">Select Plant</h3>
+                    <label class="container">
+                        <input type="radio" name="Plant" value="Spinach" checked="checked">
+                        <span class="checkmark"></span>
+                        <font size="4"> Spinach</font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="Plant" value="Carrots">
+                        <span class="checkmark"></span>
+                        <font size="4">Carrots
+                        </font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="Plant" value="Tomato">
+                        <span class="checkmark"></span>
+                        <font size="4">Tomato
+                        </font>
+                        <br />
+                    </label>
+
+                </div>
+                <div class="col-sm-6">
+                    <h3 style="background:cadetblue">Coordinates</h3>
+                    <p>X coords</p>
+                    <input id='showXCoords' name="X-pos" value="0"></p>
+                    <p>Y coords</p>
+                    <input id='showYCoords' name="Y-pos" value="0"></p>
+                </div>
+
+                <div class="row submitbottom">
+                    <div class="col-sm-12">
+                        <input class="button btn btn-primary" type="submit" value="Plant">
+
+                    </div>
+                </div>
+            </form>
+
+
+        </div><br />
+        <form id="controls" action="/result" align='right' method="POST">
+
+            <div class="container row">
+                <div class="col-sm-2">
+                    <label class='container' style="background:cadetblue">
+                        <font size="4">Calibrate</font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="calibrate" value="3" checked="checked">
+                        <span class="checkmark"></span>
+                        <font size="4">No Calibration
+                        </font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="calibrate" value="0">
+                        <span class="checkmark"></span>
+                        <font size="4">XAxis
+                        </font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="calibrate" value="1">
+                        <span class="checkmark"></span>
+                        <font size="4">YAxis
+                        </font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="calibrate" value="2">
+                        <span class="checkmark"></span>
+                        <font size="4">ZAxis
+                        </font>
+                        <br />
+                    </label>
+
+
+                </div>
+
+                <div class="col-sm-2">
+
+                    <label class='container' style="background:cadetblue">
+                        <font size="4">Water Pump</font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="WaterPump" value="1">
+                        <span class="checkmark"></span>
+                        <font size="4">ON
+                        </font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="WaterPump" value="0" checked="checked">
+                        <span class="checkmark"></span>
+                        <font size="4">OFF
+                        </font>
+                        <br /><br />
+                    </label>
+
+
+                </div>
+                <div class="col-sm-2">
+
+                    <label class='container' style="background:cadetblue">
+                        <font size="4">Tool</font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="tool" value="0">
+                        <span class="checkmark"></span>
+                        <font size="4">Weeder
+                        </font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="tool" value="1">
+                        <span class="checkmark"></span>
+                        <font size="4">Soil Moisture
+                        </font>
+                        <br /><br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="tool" value="2">
+                        <span class="checkmark"></span>
+                        <font size="4">Water
+                        </font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="tool" value="3" checked="checked">
+                        <span class="checkmark"></span>
+                        <font size="4">Seeder
+                        </font>
+                        <br />
+                    </label>
+                </div>
+                <div class="col-sm-2">
+
+                    <label class='container' style="background:cadetblue">
+                        <font size="4">Vacuum Pump</font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="VacuumPump" value="1">
+                        <span class="checkmark"></span>
+                        <font size="4">ON
+                        </font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="VacuumPump" value="0" checked="checked">
+                        <span class="checkmark"></span>
+                        <font size="4">OFF
+                        </font>
+                        <br /><br />
+                    </label>
+
+                </div>
+                <div class="col-sm-2">
+                    <label class='container' style="background:cadetblue">
+                        <font size="4">Move Axis</font>
+                        <br />
+                    </label>
+                    X axis position:<br>
+                    <input type="text" name="X" value="0">
+                    <br>
+                    Y axis position:<br>
+                    <input type="text" name="Y" value="0">
+                    <br>
+                    Z axis position:<br>
+                    <input type="text" name="Z" value="0">
+                    <br /><br />
+                </div>
+                <div class="col-sm-2">
+
+                    <label class='container' style="background:cadetblue">
+                        <font size="4">Seed</font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="seedbox" value="1">
+                        <span class="checkmark"></span>
+                        <font size="4">Center
+                        </font>
+                        <br />
+                    </label>
+                    <label class="container">
+                        <input type="radio" name="seedbox" value="0" checked="checked">
+                        <span class="checkmark"></span>
+                        <font size="4">Side
+                        </font>
+                        <br /><br />
+                    </label>
+
+                </div>
+
+
+
+            </div>
+            <div class="row submitbottom">
+                <div class="col-sm-12">
+                    <input class="button btn btn-primary" type="submit" value="Move">
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>
