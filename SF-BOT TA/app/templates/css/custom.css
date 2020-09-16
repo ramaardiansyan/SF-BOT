@@ -1,0 +1,22 @@
+.toprow {
+    height: 500px;
+  }
+
+  #canvas{
+    border: solid 1px blue;  
+    width: 100%;
+    margin: 0;
+  }
+
+  .farmarea{
+      text-align: center;
+  }
+
+.submitbottom{
+  text-align: center;
+}
+
+.scrop{
+  border: solid 2px;
+  border-color: rgb(138, 138, 241);
+}
